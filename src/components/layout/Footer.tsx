@@ -15,7 +15,7 @@ const Footer = () => {
                 <Brain className="h-6 w-6 text-primary" />
               </div>
               <span className="text-xl font-bold text-primary">
-                Mental<span className="text-wellness">Wellness</span>
+                Care<span className="text-wellness">Spark</span>
               </span>
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed">
@@ -118,7 +118,7 @@ const Footer = () => {
         <div className="border-t border-border/50 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-sm text-muted-foreground">
-              © 2024 Mental Wellness Hub. All rights reserved. Your privacy and wellbeing are our priority.
+              © 2024 CareSpark. All rights reserved. Your privacy and wellbeing are our priority.
             </p>
             <div className="flex items-center space-x-6 text-sm">
               <Link to="/admin-auth" className="text-muted-foreground hover:text-primary transition-smooth">

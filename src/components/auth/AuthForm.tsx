@@ -135,7 +135,7 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
             )}
           </div>
           <CardTitle className="text-2xl font-bold text-balance">
-            {userType === "admin" ? "Admin Portal" : userType === "counselor" ? "Counselor Portal" : "Mental Wellness Hub"}
+            {userType === "admin" ? "Admin Portal" : userType === "counselor" ? "Counselor Portal" : "CareSpark Hub"}
           </CardTitle>
           <CardDescription className="text-muted-foreground">
             {userType === "admin"

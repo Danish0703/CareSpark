@@ -30,12 +30,12 @@ const Index = () => {
             <div className="text-center lg:text-left space-y-8 animate-fade-in">
               <div className="inline-flex items-center px-4 py-2 rounded-full bg-wellnessHighlight/30 border border-wellnessHighlight">
                 <span className="text-sm font-medium text-wellnessHighlight">
-                  ✨ Modern Mental Wellness Platform
+                  ✨ Modern CareSpark Platform
                 </span>
               </div>
 
               <h1 className="text-4xl lg:text-6xl font-bold leading-tight text-wellnessText">
-                Welcome to <span className="block text-wellnessPrimary">Mental Wellness</span>
+                Welcome to <span className="block text-wellnessPrimary">CareSpark</span>
               </h1>
 
               <p className="text-xl text-wellnessTextSecondary max-w-2xl text-balance">

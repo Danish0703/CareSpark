@@ -119,12 +119,12 @@ const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20 md:h-24">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3 hover:scale-105 hover:shadow-glow transition-smooth rounded-2xl px-2 py-1" aria-label="Mental Wellness Home">
+          <Link to="/" className="flex items-center space-x-3 hover:scale-105 hover:shadow-glow transition-smooth rounded-2xl px-2 py-1" aria-label="CareSpark Home">
             <div className="p-3 rounded-full bg-wellnessPrimary/10 shadow-card">
               <Brain className="h-8 w-8 text-wellnessPrimary" />
             </div>
             <span className="text-2xl md:text-3xl font-extrabold text-wellnessPrimary tracking-tight">
-              Mental<span className="text-wellnessSecondary">Wellness</span>
+              Care<span className="text-wellnessSecondary">Spark</span>
             </span>
           </Link>
 
