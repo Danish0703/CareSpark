@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Mental Health Platform Design System - Calming & Professional */
+/* CareSpark Design System - Calming & Professional */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -15,20 +16,20 @@
     --popover: 0 0% 100%;
     --popover-foreground: 210 40% 8%;
 
-    /* Calming blue-green primary palette */
-    --primary: 180 50% 45%;
+    /* Enhanced primary palette */
+    --primary: 180 60% 40%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 180 60% 85%;
-    --primary-glow: 180 80% 70%;
+    --primary-light: 180 70% 88%;
+    --primary-glow: 180 80% 75%;
 
     /* Soft secondary colors */
     --secondary: 210 30% 92%;
     --secondary-foreground: 210 40% 15%;
 
     /* Wellness green accent */
-    --wellness: 150 50% 45%;
+    --wellness: 150 55% 40%;
     --wellness-foreground: 0 0% 100%;
-    --wellness-light: 150 60% 85%;
+    --wellness-light: 150 65% 88%;
 
     /* Crisis/Alert warm colors */
     --crisis: 15 85% 55%;
@@ -47,7 +48,7 @@
 
     --border: 210 20% 88%;
     --input: 210 20% 95%;
-    --ring: 180 50% 45%;
+    --ring: 180 60% 40%;
 
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
@@ -92,7 +93,7 @@
     --popover: 210 40% 10%;
     --popover-foreground: 210 40% 95%;
 
-    --primary: 180 60% 55%;
+    --primary: 180 60% 50%;
     --primary-foreground: 210 40% 8%;
     --primary-light: 180 40% 25%;
     --primary-glow: 180 70% 60%;
@@ -102,10 +103,12 @@
 
     --wellness: 150 50% 50%;
     --wellness-foreground: 210 40% 8%;
+
     --wellness-light: 150 40% 25%;
 
     --crisis: 15 85% 60%;
     --crisis-foreground: 210 40% 8%;
+
     --crisis-light: 15 60% 25%;
 
     --muted: 210 30% 15%;
@@ -138,6 +141,7 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', sans-serif;
     background: hsl(var(--gradient-calm));
   }
 
@@ -183,5 +187,28 @@
   
   .text-balance {
     text-wrap: balance;
+  }
+
+  .hover-scale {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .hover-scale:hover {
+    transform: translateY(-5px) scale(1.02);
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out;
+  }
+  
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }

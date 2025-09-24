@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -56,6 +57,7 @@ export const WellnessDashboard = ({
   const [totalPoints, setTotalPoints] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchDashboardData();
@@ -262,7 +264,7 @@ export const WellnessDashboard = ({
 
   return (
     <div className="min-h-screen gradient-hero p-4">
-      <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
+      <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <Card className="shadow-card">
           <CardHeader>
@@ -290,7 +292,7 @@ export const WellnessDashboard = ({
 
         {/* Progress Overview */}
         <div className="grid md:grid-cols-3 gap-4">
-          <Card className="shadow-card hover-scale">
+          <Card className="shadow-card">
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-2">
                 <Award className="h-5 w-5 text-wellness" />
@@ -303,7 +305,7 @@ export const WellnessDashboard = ({
             </CardContent>
           </Card>
 
-          <Card className="shadow-card hover-scale">
+          <Card className="shadow-card">
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-2">
                 <CheckCircle className="h-5 w-5 text-primary" />
@@ -316,7 +318,7 @@ export const WellnessDashboard = ({
             </CardContent>
           </Card>
 
-          <Card className="shadow-card hover-scale">
+          <Card className="shadow-card">
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-2">
                 <Calendar className="h-5 w-5 text-crisis" />

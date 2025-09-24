@@ -5,30 +5,40 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   PieChart,
   Pie,
-  Cell 
+  Cell,
 } from "recharts";
-import { 
-  Users, 
-  AlertTriangle, 
-  Heart, 
-  TrendingUp, 
-  Download, 
+import {
+  Users,
+  AlertTriangle,
+  Heart,
+  TrendingUp,
+  Download,
   Send,
   LogOut,
   Shield,
-  Activity
+  Activity,
+  Plus,
 } from "lucide-react";
 import { RealTimeMonitor } from "@/components/admin/RealTimeMonitor";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface DashboardStats {
   totalUsers: number;
@@ -47,6 +57,12 @@ const AdminDashboard = () => {
     recentActivity: 0,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [customActivity, setCustomActivity] = useState({
+    activity_name: "",
+    description: "",
+    activity_type: "mindfulness",
+    points_earned: 10,
+  });
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -57,7 +73,9 @@ const AdminDashboard = () => {
 
   const checkAdminAuth = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) {
         navigate("/admin-auth");
         return;
@@ -96,16 +114,18 @@ const AdminDashboard = () => {
         .from("risk_assessments")
         .select("risk_level, created_at");
 
-      const highRiskUsers = assessments?.filter(a => a.risk_level === "high").length || 0;
-      const lowRiskUsers = assessments?.filter(a => a.risk_level === "low").length || 0;
+      const highRiskUsers =
+        assessments?.filter((a) => a.risk_level === "high").length || 0;
+      const lowRiskUsers =
+        assessments?.filter((a) => a.risk_level === "low").length || 0;
       const totalAssessments = assessments?.length || 0;
 
       // Recent activity (last 7 days)
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      const recentActivity = assessments?.filter(
-        a => new Date(a.created_at) > sevenDaysAgo
-      ).length || 0;
+      const recentActivity =
+        assessments?.filter((a) => new Date(a.created_at) > sevenDaysAgo)
+          .length || 0;
 
       setStats({
         totalUsers: totalUsers || 0,
@@ -155,6 +175,42 @@ const AdminDashboard = () => {
       title: "Alert sent",
       description: "SMS alert has been sent to high-risk users.",
     });
+  };
+
+  const handleCreateCustomActivity = async () => {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Insert the new activity into the database
+      const { error } = await supabase.from("wellness_activities").insert({
+        user_id: user.id, // Or a dedicated admin user ID
+        ...customActivity,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Activity Created!",
+        description: "The new activity has been added to the database.",
+      });
+
+      // Reset form
+      setCustomActivity({
+        activity_name: "",
+        description: "",
+        activity_type: "mindfulness",
+        points_earned: 10,
+      });
+    } catch (error) {
+      toast({
+        title: "Error creating activity",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const chartData = [
@@ -220,7 +276,9 @@ const AdminDashboard = () => {
                 <span className="font-semibold">Total Users</span>
               </div>
               <div className="text-2xl font-bold">{stats.totalUsers}</div>
-              <div className="text-sm text-muted-foreground">Registered users</div>
+              <div className="text-sm text-muted-foreground">
+                Registered users
+              </div>
             </CardContent>
           </Card>
 
@@ -230,8 +288,12 @@ const AdminDashboard = () => {
                 <AlertTriangle className="h-5 w-5 text-crisis" />
                 <span className="font-semibold">High Risk</span>
               </div>
-              <div className="text-2xl font-bold text-crisis">{stats.highRiskUsers}</div>
-              <div className="text-sm text-muted-foreground">Require attention</div>
+              <div className="text-2xl font-bold text-crisis">
+                {stats.highRiskUsers}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Require attention
+              </div>
             </CardContent>
           </Card>
 
@@ -241,8 +303,12 @@ const AdminDashboard = () => {
                 <Heart className="h-5 w-5 text-wellness" />
                 <span className="font-semibold">Low Risk</span>
               </div>
-              <div className="text-2xl font-bold text-wellness">{stats.lowRiskUsers}</div>
-              <div className="text-sm text-muted-foreground">Wellness focused</div>
+              <div className="text-2xl font-bold text-wellness">
+                {stats.lowRiskUsers}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Wellness focused
+              </div>
             </CardContent>
           </Card>
 
@@ -317,6 +383,91 @@ const AdminDashboard = () => {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Create Custom Activities */}
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Plus className="h-5 w-5 text-primary" />
+                  Create New Wellness Activity
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="activity-name">Activity Name</Label>
+                    <Input
+                      id="activity-name"
+                      placeholder="e.g., Daily Meditation"
+                      value={customActivity.activity_name}
+                      onChange={(e) =>
+                        setCustomActivity({
+                          ...customActivity,
+                          activity_name: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="points">Points Earned</Label>
+                    <Input
+                      id="points"
+                      type="number"
+                      placeholder="e.g., 10"
+                      value={customActivity.points_earned}
+                      onChange={(e) =>
+                        setCustomActivity({
+                          ...customActivity,
+                          points_earned: parseInt(e.target.value),
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Input
+                    id="description"
+                    placeholder="Brief description of the activity"
+                    value={customActivity.description}
+                    onChange={(e) =>
+                      setCustomActivity({
+                        ...customActivity,
+                        description: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="activity-type">Activity Type</Label>
+                  <Select
+                    value={customActivity.activity_type}
+                    onValueChange={(value) =>
+                      setCustomActivity({
+                        ...customActivity,
+                        activity_type: value,
+                      })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select an activity type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="mindfulness">Mindfulness</SelectItem>
+                      <SelectItem value="exercise">Exercise</SelectItem>
+                      <SelectItem value="journal">Journaling</SelectItem>
+                      <SelectItem value="social">Social Connection</SelectItem>
+                      <SelectItem value="learning">Learning</SelectItem>
+                      <SelectItem value="game">Game</SelectItem>
+                      <SelectItem value="creative">Creative</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button onClick={handleCreateCustomActivity} className="w-full">
+                  Create Activity
+                </Button>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="alerts" className="space-y-4">
@@ -338,7 +489,7 @@ const AdminDashboard = () => {
                     Send Crisis Alert
                   </Button>
                 </div>
-                
+
                 <div className="p-4 border rounded-lg">
                   <h4 className="font-semibold mb-2">Wellness Check-in</h4>
                   <p className="text-sm text-muted-foreground mb-4">
@@ -353,7 +504,8 @@ const AdminDashboard = () => {
                 <div className="p-4 border rounded-lg bg-muted/50">
                   <h4 className="font-semibold mb-2">Alert History</h4>
                   <p className="text-sm text-muted-foreground">
-                    Recent alerts will appear here once the SMS service is configured.
+                    Recent alerts will appear here once the SMS service is
+                    configured.
                   </p>
                 </div>
               </CardContent>
@@ -375,7 +527,11 @@ const AdminDashboard = () => {
                     <p className="text-sm text-muted-foreground mb-4">
                       Export all risk assessment data in CSV format.
                     </p>
-                    <Button variant="outline" onClick={handleExportData} className="w-full">
+                    <Button
+                      variant="outline"
+                      onClick={handleExportData}
+                      className="w-full"
+                    >
                       <Download className="mr-2 h-4 w-4" />
                       Export Assessments
                     </Button>
@@ -386,7 +542,11 @@ const AdminDashboard = () => {
                     <p className="text-sm text-muted-foreground mb-4">
                       Export user engagement and activity metrics.
                     </p>
-                    <Button variant="outline" onClick={handleExportData} className="w-full">
+                    <Button
+                      variant="outline"
+                      onClick={handleExportData}
+                      className="w-full"
+                    >
                       <Download className="mr-2 h-4 w-4" />
                       Export Analytics
                     </Button>
@@ -397,7 +557,11 @@ const AdminDashboard = () => {
                     <p className="text-sm text-muted-foreground mb-4">
                       Export wellness activity completion data.
                     </p>
-                    <Button variant="outline" onClick={handleExportData} className="w-full">
+                    <Button
+                      variant="outline"
+                      onClick={handleExportData}
+                      className="w-full"
+                    >
                       <Download className="mr-2 h-4 w-4" />
                       Export Activities
                     </Button>
@@ -408,7 +572,11 @@ const AdminDashboard = () => {
                     <p className="text-sm text-muted-foreground mb-4">
                       Export counsellor session tracking data.
                     </p>
-                    <Button variant="outline" onClick={handleExportData} className="w-full">
+                    <Button
+                      variant="outline"
+                      onClick={handleExportData}
+                      className="w-full"
+                    >
                       <Download className="mr-2 h-4 w-4" />
                       Export Sessions
                     </Button>
@@ -418,9 +586,16 @@ const AdminDashboard = () => {
                 <div className="p-4 border rounded-lg bg-muted/50">
                   <h4 className="font-semibold mb-2">Export Guidelines</h4>
                   <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• All exported data is anonymized for privacy protection</li>
-                    <li>• Exports are generated in real-time and may take a few minutes</li>
-                    <li>• Data exports comply with healthcare privacy regulations</li>
+                    <li>
+                      • All exported data is anonymized for privacy protection
+                    </li>
+                    <li>
+                      • Exports are generated in real-time and may take a few
+                      minutes
+                    </li>
+                    <li>
+                      • Data exports comply with healthcare privacy regulations
+                    </li>
                     <li>• Export history is maintained for audit purposes</li>
                   </ul>
                 </div>

@@ -7,13 +7,19 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  Heart, 
-  Star, 
-  Target, 
-  Award, 
+import {
+  Heart,
+  Star,
+  Target,
+  Award,
   TrendingUp,
   BookOpen,
   Users,
@@ -23,7 +29,10 @@ import {
   Zap,
   Trophy,
   Calendar,
-  Flame
+  Flame,
+  Laugh,
+  Puzzle,
+  Mic,
 } from "lucide-react";
 
 interface WellnessActivity {
@@ -37,24 +46,58 @@ interface WellnessActivity {
   created_at: string;
 }
 
-interface CustomActivity {
-  activity_name: string;
-  description: string;
-  activity_type: string;
-  points_earned: number;
-}
+const predefinedActivities = [
+  {
+    activity_type: "mindfulness",
+    activity_name: "5-Minute Guided Meditation",
+    description: "Listen to a short guided meditation to center yourself.",
+    points_earned: 10,
+  },
+  {
+    activity_type: "exercise",
+    activity_name: "Gentle Stretching",
+    description:
+      "Follow a 10-minute gentle stretching routine to release tension.",
+    points_earned: 15,
+  },
+  {
+    activity_type: "journal",
+    activity_name: "Gratitude List",
+    description: "Write down three things you are grateful for today.",
+    points_earned: 5,
+  },
+  {
+    activity_type: "social",
+    activity_name: "Call a Loved One",
+    description: "Spend 15 minutes talking to a friend or family member.",
+    points_earned: 20,
+  },
+  {
+    activity_type: "game",
+    activity_name: "Mindful Puzzles",
+    description: "Complete a simple puzzle or brain teaser to focus your mind.",
+    points_earned: 12,
+  },
+  {
+    activity_type: "creative",
+    activity_name: "Listen to Music",
+    description:
+      "Listen to your favorite songs and be present with the moment.",
+    points_earned: 8,
+  },
+  {
+    activity_type: "learning",
+    activity_name: "Read a Positive Article",
+    description: "Read an article about a topic you enjoy or find inspiring.",
+    points_earned: 8,
+  },
+];
 
 export const EnhancedActivities = () => {
   const [activities, setActivities] = useState<WellnessActivity[]>([]);
   const [streak, setStreak] = useState(0);
   const [totalPoints, setTotalPoints] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [customActivity, setCustomActivity] = useState<CustomActivity>({
-    activity_name: "",
-    description: "",
-    activity_type: "custom",
-    points_earned: 10
-  });
   const { toast } = useToast();
 
   useEffect(() => {
@@ -65,13 +108,13 @@ export const EnhancedActivities = () => {
 
   const setupRealtimeSubscription = () => {
     const channel = supabase
-      .channel('activities-realtime')
+      .channel("activities-realtime")
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: '*',
-          schema: 'public',
-          table: 'wellness_activities'
+          event: "*",
+          schema: "public",
+          table: "wellness_activities",
         },
         () => {
           fetchActivities();
@@ -87,7 +130,9 @@ export const EnhancedActivities = () => {
 
   const fetchActivities = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
 
       const { data, error } = await supabase
@@ -100,7 +145,7 @@ export const EnhancedActivities = () => {
 
       setActivities(data || []);
       const points = (data || [])
-        .filter(activity => activity.completed)
+        .filter((activity) => activity.completed)
         .reduce((sum, activity) => sum + activity.points_earned, 0);
       setTotalPoints(points);
     } catch (error) {
@@ -112,7 +157,9 @@ export const EnhancedActivities = () => {
 
   const calculateStreak = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
 
       const { data } = await supabase
@@ -134,9 +181,11 @@ export const EnhancedActivities = () => {
       for (let i = 0; i < data.length; i++) {
         const completedDate = new Date(data[i].completed_at);
         completedDate.setHours(0, 0, 0, 0);
-        
-        const daysDiff = Math.floor((today.getTime() - completedDate.getTime()) / (1000 * 60 * 60 * 24));
-        
+
+        const daysDiff = Math.floor(
+          (today.getTime() - completedDate.getTime()) / (1000 * 60 * 60 * 24)
+        );
+
         if (daysDiff === currentStreak) {
           currentStreak++;
         } else {
@@ -150,13 +199,17 @@ export const EnhancedActivities = () => {
     }
   };
 
-  const completeActivity = async (activityId: string, activityName: string, points: number) => {
+  const completeActivity = async (
+    activityId: string,
+    activityName: string,
+    points: number
+  ) => {
     try {
       const { error } = await supabase
         .from("wellness_activities")
-        .update({ 
-          completed: true, 
-          completed_at: new Date().toISOString() 
+        .update({
+          completed: true,
+          completed_at: new Date().toISOString(),
         })
         .eq("id", activityId);
 
@@ -181,39 +234,29 @@ export const EnhancedActivities = () => {
     }
   };
 
-  const createCustomActivity = async () => {
+  const createInitialActivities = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { error } = await supabase
+      const { data: existingActivities } = await supabase
         .from("wellness_activities")
-        .insert({
-          user_id: user.id,
-          ...customActivity
-        });
+        .select("id")
+        .eq("user_id", user.id)
+        .limit(1);
 
-      if (error) throw error;
+      if (existingActivities && existingActivities.length > 0) return;
 
-      toast({
-        title: "Custom Activity Created!",
-        description: "Your personalized wellness activity has been added.",
-      });
-
-      setCustomActivity({
-        activity_name: "",
-        description: "",
-        activity_type: "custom",
-        points_earned: 10
-      });
-
+      const activitiesToAdd = predefinedActivities.map((activity) => ({
+        user_id: user.id,
+        ...activity,
+      }));
+      await supabase.from("wellness_activities").insert(activitiesToAdd);
       fetchActivities();
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to create activity. Please try again.",
-        variant: "destructive",
-      });
+      console.error("Error creating initial activities:", error);
     }
   };
 
@@ -227,16 +270,33 @@ export const EnhancedActivities = () => {
         return <BookOpen className="h-5 w-5 text-crisis" />;
       case "social":
         return <Users className="h-5 w-5 text-secondary" />;
+      case "game":
+        return <Puzzle className="h-5 w-5 text-purple-500" />;
+      case "creative":
+        return <Mic className="h-5 w-5 text-indigo-500" />;
       case "learning":
         return <Target className="h-5 w-5 text-primary" />;
       default:
-        return <Star className="h-5 w-5 text-wellness" />;
+        return <Star className="h-5 w-5 text-yellow-500" />;
     }
   };
 
-  const completedActivities = activities.filter(activity => activity.completed);
-  const pendingActivities = activities.filter(activity => !activity.completed);
-  const completionRate = activities.length > 0 ? (completedActivities.length / activities.length) * 100 : 0;
+  const completedActivities = activities.filter(
+    (activity) => activity.completed
+  );
+  const pendingActivities = activities.filter(
+    (activity) => !activity.completed
+  );
+  const completionRate =
+    activities.length > 0
+      ? (completedActivities.length / activities.length) * 100
+      : 0;
+
+  useEffect(() => {
+    if (pendingActivities.length === 0) {
+      createInitialActivities();
+    }
+  }, [pendingActivities]);
 
   if (isLoading) {
     return (
@@ -270,8 +330,12 @@ export const EnhancedActivities = () => {
               </div>
               <span className="font-semibold">Total Points</span>
             </div>
-            <div className="text-3xl font-bold text-primary mb-1">{totalPoints}</div>
-            <div className="text-sm text-muted-foreground">Wellness Points Earned</div>
+            <div className="text-3xl font-bold text-primary mb-1">
+              {totalPoints}
+            </div>
+            <div className="text-sm text-muted-foreground">
+              Wellness Points Earned
+            </div>
           </CardContent>
         </Card>
 
@@ -283,9 +347,13 @@ export const EnhancedActivities = () => {
               </div>
               <span className="font-semibold">Current Streak</span>
             </div>
-            <div className="text-3xl font-bold text-wellness mb-1">{streak}</div>
+            <div className="text-3xl font-bold text-wellness mb-1">
+              {streak}
+            </div>
             <div className="text-sm text-muted-foreground">
-              {streak > 0 ? `${streak} day${streak > 1 ? 's' : ''} strong!` : 'Start your streak today!'}
+              {streak > 0
+                ? `${streak} day${streak > 1 ? "s" : ""} strong!`
+                : "Start your streak today!"}
             </div>
           </CardContent>
         </Card>
@@ -298,7 +366,9 @@ export const EnhancedActivities = () => {
               </div>
               <span className="font-semibold">Completion Rate</span>
             </div>
-            <div className="text-3xl font-bold text-crisis mb-2">{Math.round(completionRate)}%</div>
+            <div className="text-3xl font-bold text-crisis mb-2">
+              {Math.round(completionRate)}%
+            </div>
             <Progress value={completionRate} className="h-2" />
           </CardContent>
         </Card>
@@ -311,7 +381,9 @@ export const EnhancedActivities = () => {
               </div>
               <span className="font-semibold">Completed</span>
             </div>
-            <div className="text-3xl font-bold text-secondary mb-1">{completedActivities.length}</div>
+            <div className="text-3xl font-bold text-secondary mb-1">
+              {completedActivities.length}
+            </div>
             <div className="text-sm text-muted-foreground">Activities Done</div>
           </CardContent>
         </Card>
@@ -319,78 +391,37 @@ export const EnhancedActivities = () => {
 
       {/* Main Activities */}
       <Tabs defaultValue="pending" className="space-y-4">
-        <div className="flex items-center justify-between">
-          <TabsList className="grid w-auto grid-cols-3">
-            <TabsTrigger value="pending">Active Challenges</TabsTrigger>
-            <TabsTrigger value="completed">Completed</TabsTrigger>
-            <TabsTrigger value="custom">Create Custom</TabsTrigger>
-          </TabsList>
-
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="wellness" size="sm">
-                <Plus className="mr-2 h-4 w-4" />
-                Quick Add
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Create Custom Activity</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="name">Activity Name</Label>
-                  <Input
-                    id="name"
-                    value={customActivity.activity_name}
-                    onChange={(e) => setCustomActivity({...customActivity, activity_name: e.target.value})}
-                    placeholder="e.g., 30-minute nature walk"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="description">Description</Label>
-                  <Input
-                    id="description"
-                    value={customActivity.description}
-                    onChange={(e) => setCustomActivity({...customActivity, description: e.target.value})}
-                    placeholder="Describe your wellness activity"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="points">Points (5-50)</Label>
-                  <Input
-                    id="points"
-                    type="number"
-                    min="5"
-                    max="50"
-                    value={customActivity.points_earned}
-                    onChange={(e) => setCustomActivity({...customActivity, points_earned: parseInt(e.target.value) || 10})}
-                  />
-                </div>
-                <Button onClick={createCustomActivity} className="w-full">
-                  Create Activity
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </div>
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="pending">Active Challenges</TabsTrigger>
+          <TabsTrigger value="completed">Completed</TabsTrigger>
+        </TabsList>
 
         <TabsContent value="pending" className="space-y-4">
           <div className="grid lg:grid-cols-2 gap-4">
             {pendingActivities.length > 0 ? (
               pendingActivities.map((activity) => (
-                <Card key={activity.id} className="shadow-card hover:shadow-lg transition-smooth border-l-4 border-l-primary">
+                <Card
+                  key={activity.id}
+                  className="shadow-card hover:shadow-lg transition-smooth border-l-4 border-l-primary"
+                >
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-start gap-3">
                         {getActivityIcon(activity.activity_type)}
                         <div className="flex-1">
-                          <h4 className="font-semibold text-lg mb-1">{activity.activity_name}</h4>
-                          <p className="text-sm text-muted-foreground mb-3">{activity.description}</p>
+                          <h4 className="font-semibold text-lg mb-1">
+                            {activity.activity_name}
+                          </h4>
+                          <p className="text-sm text-muted-foreground mb-3">
+                            {activity.description}
+                          </p>
                           <div className="flex items-center gap-2">
-                            <Badge variant="secondary" className="flex items-center gap-1">
-                              <Zap className="h-3 w-3" />
-                              +{activity.points_earned} points
+                            <Badge
+                              variant="secondary"
+                              className="flex items-center gap-1"
+                            >
+                              <Zap className="h-3 w-3" />+
+                              {activity.points_earned} points
                             </Badge>
                             <Badge variant="outline">
                               {activity.activity_type}
@@ -400,7 +431,13 @@ export const EnhancedActivities = () => {
                       </div>
                     </div>
                     <Button
-                      onClick={() => completeActivity(activity.id, activity.activity_name, activity.points_earned)}
+                      onClick={() =>
+                        completeActivity(
+                          activity.id,
+                          activity.activity_name,
+                          activity.points_earned
+                        )
+                      }
                       className="w-full"
                       variant="wellness"
                       size="lg"
@@ -414,9 +451,16 @@ export const EnhancedActivities = () => {
             ) : (
               <div className="col-span-2 text-center py-12">
                 <Trophy className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">All Activities Completed!</h3>
-                <p className="text-muted-foreground mb-6">Amazing work! You've completed all your wellness challenges.</p>
-                <Button variant="wellness" onClick={() => fetchActivities()}>
+                <h3 className="text-xl font-semibold mb-2">
+                  All Activities Completed!
+                </h3>
+                <p className="text-muted-foreground mb-6">
+                  Amazing work! You've completed all your wellness challenges.
+                </p>
+                <Button
+                  variant="wellness"
+                  onClick={() => createInitialActivities()}
+                >
                   <Plus className="mr-2 h-4 w-4" />
                   Add New Activities
                 </Button>
@@ -428,14 +472,21 @@ export const EnhancedActivities = () => {
         <TabsContent value="completed" className="space-y-4">
           <div className="grid lg:grid-cols-3 gap-4">
             {completedActivities.slice(0, 9).map((activity) => (
-              <Card key={activity.id} className="shadow-card bg-gradient-to-br from-wellness-light/20 to-primary-light/20">
+              <Card
+                key={activity.id}
+                className="shadow-card bg-gradient-to-br from-wellness-light/20 to-primary-light/20"
+              >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3 mb-3">
                     {getActivityIcon(activity.activity_type)}
                     <div className="flex-1">
-                      <h4 className="font-semibold">{activity.activity_name}</h4>
+                      <h4 className="font-semibold">
+                        {activity.activity_name}
+                      </h4>
                       <p className="text-xs text-muted-foreground">
-                        {activity.completed_at ? new Date(activity.completed_at).toLocaleDateString() : "Recently"}
+                        {activity.completed_at
+                          ? new Date(activity.completed_at).toLocaleDateString()
+                          : "Recently"}
                       </p>
                     </div>
                     <CheckCircle className="h-5 w-5 text-wellness" />
@@ -447,62 +498,6 @@ export const EnhancedActivities = () => {
               </Card>
             ))}
           </div>
-        </TabsContent>
-
-        <TabsContent value="custom" className="space-y-4">
-          <Card className="shadow-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Plus className="h-5 w-5 text-primary" />
-                Create Custom Wellness Activity
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="custom-name" className="text-sm font-medium">Activity Name</Label>
-                  <Input
-                    id="custom-name"
-                    value={customActivity.activity_name}
-                    onChange={(e) => setCustomActivity({...customActivity, activity_name: e.target.value})}
-                    placeholder="e.g., 30-minute nature walk"
-                    className="mt-2"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="custom-points" className="text-sm font-medium">Points (5-50)</Label>
-                  <Input
-                    id="custom-points"
-                    type="number"
-                    min="5"
-                    max="50"
-                    value={customActivity.points_earned}
-                    onChange={(e) => setCustomActivity({...customActivity, points_earned: parseInt(e.target.value) || 10})}
-                    className="mt-2"
-                  />
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="custom-description" className="text-sm font-medium">Description</Label>
-                <Input
-                  id="custom-description"
-                  value={customActivity.description}
-                  onChange={(e) => setCustomActivity({...customActivity, description: e.target.value})}
-                  placeholder="Describe your wellness activity and its benefits"
-                  className="mt-2"
-                />
-              </div>
-              <Button 
-                onClick={createCustomActivity} 
-                className="w-full" 
-                size="lg"
-                variant="wellness"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Create Custom Activity
-              </Button>
-            </CardContent>
-          </Card>
         </TabsContent>
       </Tabs>
     </div>

@@ -4,11 +4,23 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Heart, Shield, Stethoscope } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface AuthFormProps {
   userType?: "user" | "admin" | "counselor";
@@ -57,7 +69,13 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
           description: "Welcome to your mental wellness journey!",
         });
 
-        navigate(selectedRole === "admin" ? "/admin" : selectedRole === "counselor" ? "/counselor-dashboard" : "/dashboard");
+        navigate(
+          selectedRole === "admin"
+            ? "/admin"
+            : selectedRole === "counselor"
+            ? "/counselor-dashboard"
+            : "/dashboard"
+        );
       }
     } catch (error: any) {
       toast({
@@ -91,7 +109,7 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
           .single();
 
         const targetRole = userType || selectedRole;
-        
+
         // If userType is specified or role is selected, check role match
         if (targetRole && profile?.role !== targetRole) {
           await supabase.auth.signOut();
@@ -108,7 +126,13 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
           description: "You have successfully signed in.",
         });
 
-        navigate(profile?.role === "admin" ? "/admin" : profile?.role === "counselor" ? "/counselor-dashboard" : "/dashboard");
+        navigate(
+          profile?.role === "admin"
+            ? "/admin"
+            : profile?.role === "counselor"
+            ? "/counselor-dashboard"
+            : "/dashboard"
+        );
       }
     } catch (error: any) {
       toast({
@@ -135,7 +159,11 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
             )}
           </div>
           <CardTitle className="text-2xl font-bold text-balance">
-            {userType === "admin" ? "Admin Portal" : userType === "counselor" ? "Counselor Portal" : "Mental Wellness Hub"}
+            {userType === "admin"
+              ? "Admin Portal"
+              : userType === "counselor"
+              ? "Counselor Portal"
+              : "CareSpark"}
           </CardTitle>
           <CardDescription className="text-muted-foreground">
             {userType === "admin"
@@ -157,14 +185,23 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
                 {!userType && (
                   <div className="space-y-2">
                     <Label htmlFor="signin-role">Sign in as</Label>
-                    <Select value={selectedRole} onValueChange={setSelectedRole}>
+                    <Select
+                      value={selectedRole}
+                      onValueChange={setSelectedRole}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select your role" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="user">User - Access wellness resources</SelectItem>
-                        <SelectItem value="counselor">Counselor - Manage sessions & clients</SelectItem>
-                        <SelectItem value="admin">Admin - Platform administration</SelectItem>
+                        <SelectItem value="user">
+                          User - Access wellness resources
+                        </SelectItem>
+                        <SelectItem value="counselor">
+                          Counselor - Manage sessions & clients
+                        </SelectItem>
+                        <SelectItem value="admin">
+                          Admin - Platform administration
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -197,15 +234,24 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
                   type="submit"
                   className="w-full"
                   variant={
-                    (userType || selectedRole) === "admin" ? "default" : 
-                    (userType || selectedRole) === "counselor" ? "calm" : "wellness"
+                    (userType || selectedRole) === "admin"
+                      ? "default"
+                      : (userType || selectedRole) === "counselor"
+                      ? "calm"
+                      : "wellness"
                   }
                   size="lg"
                   disabled={isLoading}
                 >
-                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Sign In as {(userType || selectedRole) === "admin" ? "Admin" : 
-                            (userType || selectedRole) === "counselor" ? "Counselor" : "User"}
+                  {isLoading && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Sign In as{" "}
+                  {(userType || selectedRole) === "admin"
+                    ? "Admin"
+                    : (userType || selectedRole) === "counselor"
+                    ? "Counselor"
+                    : "User"}
                 </Button>
               </form>
             </TabsContent>
@@ -227,14 +273,23 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
                 {!userType && (
                   <div className="space-y-2">
                     <Label htmlFor="role">Role</Label>
-                    <Select value={selectedRole} onValueChange={setSelectedRole}>
+                    <Select
+                      value={selectedRole}
+                      onValueChange={setSelectedRole}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select your role" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="user">User - Seeking mental wellness support</SelectItem>
-                        <SelectItem value="counselor">Counselor - Licensed mental health professional</SelectItem>
-                        <SelectItem value="admin">Admin - Platform administrator</SelectItem>
+                        <SelectItem value="user">
+                          User - Seeking mental wellness support
+                        </SelectItem>
+                        <SelectItem value="counselor">
+                          Counselor - Licensed mental health professional
+                        </SelectItem>
+                        <SelectItem value="admin">
+                          Admin - Platform administration
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -267,11 +322,19 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
                 <Button
                   type="submit"
                   className="w-full"
-                  variant={selectedRole === "admin" ? "default" : selectedRole === "counselor" ? "calm" : "wellness"}
+                  variant={
+                    selectedRole === "admin"
+                      ? "default"
+                      : selectedRole === "counselor"
+                      ? "calm"
+                      : "wellness"
+                  }
                   size="lg"
                   disabled={isLoading}
                 >
-                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {isLoading && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
                   Create Account
                 </Button>
               </form>

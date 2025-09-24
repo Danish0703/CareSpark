@@ -1,160 +1,254 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Gift, ShoppingCart, Award, BookOpen, Zap, Package, Heart } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Zap, ShoppingBag, CheckCircle, Flame, Trophy } from "lucide-react";
+
+interface StoreItem {
+  id: string;
+  name: string;
+  description: string;
+  points_cost: number;
+  image: string;
+  category: string;
+}
+
+const storeItems: StoreItem[] = [
+  {
+    id: "1",
+    name: "CareSpark T-Shirt",
+    description: "A comfortable t-shirt with the CareSpark logo.",
+    points_cost: 500,
+    image:
+      "https://d1k7n08929vj14.cloudfront.net/prod/images/products/MHFAT-Shirt.jpg",
+    category: "apparel",
+  },
+  {
+    id: "2",
+    name: "Branded Water Bottle",
+    description: "Stay hydrated and mindful with this branded water bottle.",
+    points_cost: 350,
+    image:
+      "https://d1k7n08929vj14.cloudfront.net/prod/images/products/MFHA-StainlessSteelWaterBottle-Final.jpg",
+    category: "accessories",
+  },
+  {
+    id: "3",
+    name: "Mindfulness Journal",
+    description: "A high-quality journal to track your gratitude and thoughts.",
+    points_cost: 200,
+    image:
+      "https://d1k7n08929vj14.cloudfront.net/prod/images/products/Journal.jpg",
+    category: "tools",
+  },
+  {
+    id: "4",
+    name: "Wellness Sticker Pack",
+    description: "Spread positivity with a pack of CareSpark stickers.",
+    points_cost: 100,
+    image:
+      "https://d1k7n08929vj14.cloudfront.net/prod/images/products/Stickers-Final.jpg",
+    category: "accessories",
+  },
+  {
+    id: "5",
+    name: "Digital Wellness Guide",
+    description: "An e-book with tips and exercises for mental health.",
+    points_cost: 150,
+    image:
+      "https://d1k7n08929vj14.cloudfront.net/prod/images/products/digitalguide.jpg",
+    category: "digital",
+  },
+  {
+    id: "6",
+    name: "Mental Health First Aid Pin",
+    description:
+      "A stylish pin to show your support for mental health awareness.",
+    points_cost: 75,
+    image:
+      "https://d1k7n08929vj14.cloudfront.net/prod/images/products/MHFA-Pin.jpg",
+    category: "accessories",
+  },
+];
 
 const WellnessStore = () => {
-  const [storeItems, setStoreItems] = useState<any[]>([]);
-  const [userPoints, setUserPoints] = useState(0);
+  const [totalPoints, setTotalPoints] = useState(0);
+  const [redeemedItems, setRedeemedItems] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState("all");
   const { toast } = useToast();
 
   useEffect(() => {
-    fetchStoreData();
+    fetchUserData();
   }, []);
 
-  const fetchStoreData = async () => {
+  const fetchUserData = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
 
-      const mockStoreItems = [
-        {
-          id: "1",
-          name: "Meditation App Premium",
-          description: "One month access to premium meditation features",
-          points_cost: 500,
-          category: "Digital"
-        },
-        {
-          id: "2", 
-          name: "Wellness Journal",
-          description: "Beautiful hardcover journal for tracking your wellness journey",
-          points_cost: 750,
-          category: "Physical"
-        }
-      ];
-
-      setStoreItems(mockStoreItems);
-      
-      const { data: activities } = await supabase
+      const { data: activities, error: activitiesError } = await supabase
         .from("wellness_activities")
-        .select("points_earned, completed")
+        .select("points_earned")
         .eq("user_id", user.id)
         .eq("completed", true);
 
-      if (activities) {
-        const totalPoints = activities.reduce((sum, activity) => sum + (activity.points_earned || 0), 0);
-        setUserPoints(totalPoints);
-      }
+      if (activitiesError) throw activitiesError;
 
+      const points = activities.reduce(
+        (sum, activity) => sum + activity.points_earned,
+        0
+      );
+
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("redeemed_items")
+        .eq("user_id", user.id)
+        .single();
+
+      if (profileError && profileError.code !== "PGRST116") throw profileError;
+
+      const redeemed = profileData?.redeemed_items || [];
+      const redeemedPoints = redeemed.reduce((sum: number, itemId: string) => {
+        const item = storeItems.find((i) => i.id === itemId);
+        return sum + (item?.points_cost || 0);
+      }, 0);
+
+      setTotalPoints(points - redeemedPoints);
+      setRedeemedItems(redeemed);
     } catch (error) {
-      console.error("Error fetching store data:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load store data.",
-        variant: "destructive",
-      });
+      console.error("Error fetching user data for store:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handlePurchase = async (item: any) => {
-    if (userPoints < item.points_cost) {
+  const handleRedeem = async (item: StoreItem) => {
+    if (totalPoints < item.points_cost) {
       toast({
-        title: "Insufficient Points",
-        description: `You need ${item.points_cost - userPoints} more points to purchase this item.`,
+        title: "Not Enough Points",
+        description: `You need ${item.points_cost} points to redeem this item. Keep earning!`,
         variant: "destructive",
       });
       return;
     }
 
-    toast({
-      title: "Purchase Successful!",
-      description: `You've purchased ${item.name}. Feature coming soon!`,
-    });
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
 
-    setUserPoints(prev => prev - item.points_cost);
-  };
+      const newRedeemedItems = [...redeemedItems, item.id];
+      const { error } = await supabase
+        .from("profiles")
+        .update({ redeemed_items: newRedeemedItems })
+        .eq("user_id", user.id);
 
-  const getCategoryIcon = (category: string) => {
-    switch (category.toLowerCase()) {
-      case "digital": return <Zap className="h-4 w-4" />;
-      case "physical": return <Package className="h-4 w-4" />;
-      case "services": return <Heart className="h-4 w-4" />;
-      case "education": return <BookOpen className="h-4 w-4" />;
-      default: return <Gift className="h-4 w-4" />;
+      if (error) throw error;
+
+      toast({
+        title: "🎉 Item Redeemed!",
+        description: `You successfully redeemed "${item.name}" for ${item.points_cost} points. A confirmation email has been sent.`,
+        variant: "default",
+      });
+
+      fetchUserData();
+    } catch (error) {
+      toast({
+        title: "Redemption Failed",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <Skeleton className="h-32" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="h-64" />
-          ))}
-        </div>
+      <div className="space-y-6 animate-fade-in">
+        <Card className="shadow-card">
+          <CardContent className="p-6 text-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
+            <p>Loading the CareSpark Store...</p>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <Card className="bg-gradient-wellness text-wellness-foreground">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Award className="h-6 w-6" />
-            Your Wellness Points
+    <div className="space-y-6 animate-fade-in">
+      <Card className="shadow-card">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl font-bold flex items-center justify-center gap-2">
+            <ShoppingBag className="h-6 w-6 text-primary" />
+            CareSpark Store
           </CardTitle>
-          <CardDescription className="text-wellness-foreground/80">
-            Earn points by completing activities and redeem them here
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-4xl font-bold">{userPoints}</div>
-          <p className="text-sm text-wellness-foreground/80 mt-2">
-            Total points available to spend
+          <p className="text-muted-foreground mt-2">
+            Redeem your wellness points for exclusive CareSpark goodies.
           </p>
-        </CardContent>
+          <div className="flex items-center justify-center gap-2 mt-4">
+            <Trophy className="h-5 w-5 text-primary" />
+            <span className="text-lg font-semibold">{totalPoints}</span>
+            <span className="text-sm text-muted-foreground">
+              Points Available
+            </span>
+          </div>
+        </CardHeader>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {storeItems.map((item) => (
-          <Card key={item.id} className="hover:shadow-card transition-smooth">
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div>
-                  <CardTitle className="text-lg">{item.name}</CardTitle>
-                  <CardDescription className="mt-1">{item.description}</CardDescription>
-                </div>
-                <Badge className="gap-1">
-                  {getCategoryIcon(item.category)}
+          <Card
+            key={item.id}
+            className="shadow-card hover-scale transition-smooth"
+          >
+            <CardContent className="p-4">
+              <div className="relative aspect-square mb-4 rounded-lg overflow-hidden">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-full h-full object-cover"
+                />
+                <Badge variant="secondary" className="absolute top-2 right-2">
                   {item.category}
                 </Badge>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="text-2xl font-bold text-primary">
-                {item.points_cost} pts
+              <h3 className="font-semibold text-lg">{item.name}</h3>
+              <p className="text-sm text-muted-foreground mb-3">
+                {item.description}
+              </p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1">
+                  <Zap className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium">
+                    {item.points_cost} Points
+                  </span>
+                </div>
+                <Button
+                  onClick={() => handleRedeem(item)}
+                  disabled={
+                    totalPoints < item.points_cost ||
+                    redeemedItems.includes(item.id)
+                  }
+                  variant="wellness"
+                  size="sm"
+                >
+                  {redeemedItems.includes(item.id) ? (
+                    <>
+                      <CheckCircle className="mr-1 h-4 w-4" />
+                      Redeemed
+                    </>
+                  ) : (
+                    "Redeem"
+                  )}
+                </Button>
               </div>
-              <Button
-                onClick={() => handlePurchase(item)}
-                disabled={userPoints < item.points_cost}
-                className="w-full gap-2"
-                variant="wellness"
-              >
-                <ShoppingCart className="h-4 w-4" />
-                {userPoints >= item.points_cost ? "Purchase" : "Not Enough Points"}
-              </Button>
             </CardContent>
           </Card>
         ))}
