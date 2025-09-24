@@ -130,51 +130,38 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-gradient-to-b from-wellnessBgStart to-wellnessBgEnd/80 backdrop-blur-lg border-b border-border/50 transition-smooth" aria-label="Main Navigation">
+    <nav
+      className="sticky top-0 z-50 bg-gradient-to-b from-wellnessBgStart to-wellnessBgEnd/80 backdrop-blur-lg border-b border-border/50 transition-smooth"
+      aria-label="Main Navigation"
+    >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20 md:h-24">
           {/* Logo */}
-<<<<<<< HEAD
           <Link
             to="/"
-            className="flex items-center space-x-2 hover:opacity-80 transition-smooth"
+            className="flex items-center space-x-3 hover:scale-105 hover:shadow-glow transition-smooth rounded-2xl px-2 py-1"
+            aria-label="CareSpark Home"
           >
-            <div className="p-2 rounded-full bg-primary-light">
-              <Brain className="h-6 w-6 text-primary" />
-            </div>
-            <span className="text-xl font-bold text-primary">
-              Care<span className="text-wellness">Spark</span>
-=======
-          <Link to="/" className="flex items-center space-x-3 hover:scale-105 hover:shadow-glow transition-smooth rounded-2xl px-2 py-1" aria-label="CareSpark Home">
             <div className="p-3 rounded-full bg-wellnessPrimary/10 shadow-card">
               <Brain className="h-8 w-8 text-wellnessPrimary" />
             </div>
             <span className="text-2xl md:text-3xl font-extrabold text-wellnessPrimary tracking-tight">
               Care<span className="text-wellnessSecondary">Spark</span>
->>>>>>> origin/main
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-<<<<<<< HEAD
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) =>
-=======
           <div className="hidden md:flex items-center space-x-10">
-            {navItems.map((item) => (
->>>>>>> origin/main
+            {navItems.map((item) =>
               user ? (
                 <Link
                   key={item.label}
                   to={item.href}
-<<<<<<< HEAD
-                  className={`text-foreground/80 hover:text-primary transition-smooth font-medium flex items-center gap-2 ${
-                    location.pathname === item.href ? "text-primary" : ""
-=======
                   aria-label={item.label}
                   className={`text-wellnessTextSecondary hover:text-wellnessPrimary transition-smooth font-semibold flex items-center gap-2 px-3 py-2 rounded-2xl hover:bg-wellnessPrimary/10 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-wellnessPrimary/40 ${
-                    location.pathname === item.href ? 'text-wellnessPrimary bg-wellnessPrimary/10' : ''
->>>>>>> origin/main
+                    location.pathname === item.href
+                      ? "text-wellnessPrimary bg-wellnessPrimary/10"
+                      : ""
                   }`}
                 >
                   {item.icon && <item.icon className="h-5 w-5" />}
@@ -199,20 +186,13 @@ const Navigation = () => {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-<<<<<<< HEAD
                   <Button
                     variant="ghost"
-                    className="relative h-10 w-10 rounded-full"
+                    className="relative h-12 w-12 rounded-full shadow-card hover:shadow-glow transition-smooth"
                   >
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src="" alt={profile?.full_name || ""} />
-                      <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-=======
-                  <Button variant="ghost" className="relative h-12 w-12 rounded-full shadow-card hover:shadow-glow transition-smooth">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src="" alt={profile?.full_name || ''} />
+                      <AvatarImage src="" alt={profile?.full_name || ""} />
                       <AvatarFallback className="bg-wellnessPrimary/10 text-wellnessPrimary font-semibold">
->>>>>>> origin/main
                         {getUserInitials()}
                       </AvatarFallback>
                     </Avatar>
@@ -276,27 +256,18 @@ const Navigation = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-<<<<<<< HEAD
-          <div className="md:hidden border-t border-border/50 py-4 animate-fade-in">
-            <div className="flex flex-col space-y-4">
-              {navItems.map((item) =>
-=======
           <div className="md:hidden border-t border-border/50 py-6 animate-fade-in bg-gradient-to-b from-wellnessBgStart to-wellnessBgEnd/90">
             <div className="flex flex-col space-y-5">
-              {navItems.map((item) => (
->>>>>>> origin/main
+              {navItems.map((item) =>
                 user ? (
                   <button
                     key={item.label}
                     onClick={() => handleNavClick(item.href)}
-<<<<<<< HEAD
-                    className={`text-foreground/80 hover:text-primary transition-smooth font-medium px-2 py-2 text-left flex items-center gap-2 ${
-                      location.pathname === item.href ? "text-primary" : ""
-=======
                     aria-label={item.label}
                     className={`text-wellnessTextSecondary hover:text-wellnessPrimary transition-smooth font-semibold px-3 py-3 text-left flex items-center gap-3 rounded-2xl hover:bg-wellnessPrimary/10 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-wellnessPrimary/40 ${
-                      location.pathname === item.href ? 'text-wellnessPrimary bg-wellnessPrimary/10' : ''
->>>>>>> origin/main
+                      location.pathname === item.href
+                        ? "text-wellnessPrimary bg-wellnessPrimary/10"
+                        : ""
                     }`}
                   >
                     {item.icon && <item.icon className="h-5 w-5" />}

@@ -35,11 +35,14 @@ const Index = () => {
               </div>
 
               <h1 className="text-4xl lg:text-6xl font-bold leading-tight text-wellnessText">
-                Welcome to <span className="block text-wellnessPrimary">CareSpark</span>
+                Welcome to{" "}
+                <span className="block text-wellnessPrimary">CareSpark</span>
               </h1>
 
               <p className="text-xl text-wellnessTextSecondary max-w-2xl text-balance">
-                Feel safe, supported, and empowered. Personalized assessments, professional support, and 24/7 resources—all in one calming space.
+                Feel safe, supported, and empowered. Personalized assessments,
+                professional support, and 24/7 resources—all in one calming
+                space.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -74,13 +77,54 @@ const Index = () => {
             <div className="relative animate-fade-in delay-200">
               <div className="aspect-square rounded-2xl bg-gradient-wellness p-8 shadow-soft flex items-center justify-center">
                 {/* Custom Calming SVG Illustration */}
-                <svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full max-w-xs max-h-xs">
+                <svg
+                  width="220"
+                  height="220"
+                  viewBox="0 0 220 220"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-full h-full max-w-xs max-h-xs"
+                >
                   <ellipse cx="110" cy="110" rx="100" ry="90" fill="#EAF8F2" />
-                  <ellipse cx="110" cy="120" rx="80" ry="70" fill="#A8D5BA" fillOpacity="0.5" />
-                  <ellipse cx="110" cy="100" rx="60" ry="50" fill="#6BAED6" fillOpacity="0.7" />
-                  <ellipse cx="110" cy="110" rx="40" ry="35" fill="#FFB7A5" fillOpacity="0.7" />
-                  <ellipse cx="110" cy="120" rx="20" ry="15" fill="#F6E27F" fillOpacity="0.8" />
-                  <circle cx="110" cy="110" r="10" fill="#fff" fillOpacity="0.9" />
+                  <ellipse
+                    cx="110"
+                    cy="120"
+                    rx="80"
+                    ry="70"
+                    fill="#A8D5BA"
+                    fillOpacity="0.5"
+                  />
+                  <ellipse
+                    cx="110"
+                    cy="100"
+                    rx="60"
+                    ry="50"
+                    fill="#6BAED6"
+                    fillOpacity="0.7"
+                  />
+                  <ellipse
+                    cx="110"
+                    cy="110"
+                    rx="40"
+                    ry="35"
+                    fill="#FFB7A5"
+                    fillOpacity="0.7"
+                  />
+                  <ellipse
+                    cx="110"
+                    cy="120"
+                    rx="20"
+                    ry="15"
+                    fill="#F6E27F"
+                    fillOpacity="0.8"
+                  />
+                  <circle
+                    cx="110"
+                    cy="110"
+                    r="10"
+                    fill="#fff"
+                    fillOpacity="0.9"
+                  />
                 </svg>
               </div>
               {/* Floating elements */}
@@ -153,17 +197,31 @@ const Index = () => {
       <section className="py-16 bg-gradient-to-br from-wellnessBgStart to-wellnessBgEnd">
         <div className="container mx-auto px-4 animate-fade-in">
           <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-wellnessText mb-3">Take the next step</h2>
-            <p className="text-lg text-wellnessTextSecondary max-w-2xl mx-auto">Quick actions to start your journey in a calm, supportive space.</p>
+            <h2 className="text-3xl lg:text-4xl font-bold text-wellnessText mb-3">
+              Take the next step
+            </h2>
+            <p className="text-lg text-wellnessTextSecondary max-w-2xl mx-auto">
+              Quick actions to start your journey in a calm, supportive space.
+            </p>
           </div>
           <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
             <Card className="rounded-2xl shadow-soft hover:shadow-glow transition-smooth hover:scale-[1.02] bg-white/90 backdrop-blur-md border-0">
               <CardHeader>
-                <CardTitle className="text-wellnessPrimary text-xl">Start an Assessment</CardTitle>
-                <CardDescription className="text-wellnessTextSecondary">Get a gentle, guided check-in with animated progress and insights.</CardDescription>
+                <CardTitle className="text-wellnessPrimary text-xl">
+                  Start an Assessment
+                </CardTitle>
+                <CardDescription className="text-wellnessTextSecondary">
+                  Get a gentle, guided check-in with animated progress and
+                  insights.
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button asChild variant="wellness" className="w-full rounded-2xl" aria-label="Begin assessment">
+                <Button
+                  asChild
+                  variant="wellness"
+                  className="w-full rounded-2xl"
+                  aria-label="Begin assessment"
+                >
                   <Link to="/assessment">Begin Now</Link>
                 </Button>
               </CardContent>
@@ -171,11 +229,21 @@ const Index = () => {
 
             <Card className="rounded-2xl shadow-soft hover:shadow-glow transition-smooth hover:scale-[1.02] bg-white/90 backdrop-blur-md border-0">
               <CardHeader>
-                <CardTitle className="text-wellnessPrimary text-xl">Explore Resources</CardTitle>
-                <CardDescription className="text-wellnessTextSecondary">Articles, exercises, and tools curated to support your wellbeing.</CardDescription>
+                <CardTitle className="text-wellnessPrimary text-xl">
+                  Explore Resources
+                </CardTitle>
+                <CardDescription className="text-wellnessTextSecondary">
+                  Articles, exercises, and tools curated to support your
+                  wellbeing.
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button asChild variant="outline" className="w-full rounded-2xl border-wellnessPrimary text-wellnessPrimary hover:bg-wellnessPrimary/10" aria-label="Browse resources">
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full rounded-2xl border-wellnessPrimary text-wellnessPrimary hover:bg-wellnessPrimary/10"
+                  aria-label="Browse resources"
+                >
                   <Link to="/resources">Browse Resources</Link>
                 </Button>
               </CardContent>
@@ -183,11 +251,20 @@ const Index = () => {
 
             <Card className="rounded-2xl shadow-soft hover:shadow-glow transition-smooth hover:scale-[1.02] bg-white/90 backdrop-blur-md border-0">
               <CardHeader>
-                <CardTitle className="text-wellnessPrimary text-xl">Join Peer Support</CardTitle>
-                <CardDescription className="text-wellnessTextSecondary">Connect with a safe, supportive community at your own pace.</CardDescription>
+                <CardTitle className="text-wellnessPrimary text-xl">
+                  Join Peer Support
+                </CardTitle>
+                <CardDescription className="text-wellnessTextSecondary">
+                  Connect with a safe, supportive community at your own pace.
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button asChild variant="outline" className="w-full rounded-2xl border-wellnessPrimary text-wellnessPrimary hover:bg-wellnessPrimary/10" aria-label="Join peer support">
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full rounded-2xl border-wellnessPrimary text-wellnessPrimary hover:bg-wellnessPrimary/10"
+                  aria-label="Join peer support"
+                >
                   <Link to="/peer-support">Join Community</Link>
                 </Button>
               </CardContent>
@@ -297,8 +374,9 @@ const Index = () => {
                 For Healthcare Administrators
               </CardTitle>
               <CardDescription className="text-xl max-w-3xl mx-auto">
-                Comprehensive dashboard with advanced analytics, real-time
-                monitoring, and crisis management tools
+                Comprehensive dashboard with advanced analytics, real-time git
+                pull origin main git pull origin main monitoring, and crisis
+                management tools
               </CardDescription>
             </CardHeader>
             <CardContent className="px-8 pb-8">

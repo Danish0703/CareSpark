@@ -160,12 +160,8 @@ const Footer = () => {
         <div className="border-t border-border/50 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-sm text-muted-foreground">
-<<<<<<< HEAD
-              © 2024 CareSpark. All rights reserved. Your privacy and wellbeing
+              © 2025 CareSpark. All rights reserved. Your privacy and wellbeing
               are our priority.
-=======
-              © 2024 CareSpark. All rights reserved. Your privacy and wellbeing are our priority.
->>>>>>> origin/main
             </p>
             <div className="flex items-center space-x-6 text-sm">
               <Link
