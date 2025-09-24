@@ -6,18 +6,18 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  Heart, 
-  Star, 
-  Calendar, 
-  Target, 
-  Award, 
+import {
+  Heart,
+  Star,
+  Calendar,
+  Target,
+  Award,
   TrendingUp,
   BookOpen,
   Users,
   CheckCircle,
   Plus,
-  Brain
+  Brain,
 } from "lucide-react";
 import { EnhancedActivities } from "@/components/activities/EnhancedActivities";
 import { EnhancedResourceHub } from "@/components/resources/EnhancedResourceHub";
@@ -48,7 +48,9 @@ interface WellnessDashboardProps {
   onRetakeAssessment?: () => void;
 }
 
-export const WellnessDashboard = ({ onRetakeAssessment }: WellnessDashboardProps) => {
+export const WellnessDashboard = ({
+  onRetakeAssessment,
+}: WellnessDashboardProps) => {
   const [activities, setActivities] = useState<WellnessActivity[]>([]);
   const [sessions, setSessions] = useState<CounsellorSession[]>([]);
   const [totalPoints, setTotalPoints] = useState(0);
@@ -63,24 +65,24 @@ export const WellnessDashboard = ({ onRetakeAssessment }: WellnessDashboardProps
 
   const setupRealtimeSubscriptions = useCallback(() => {
     const channel = supabase
-      .channel('wellness-updates')
+      .channel("wellness-updates")
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: '*',
-          schema: 'public',
-          table: 'wellness_activities'
+          event: "*",
+          schema: "public",
+          table: "wellness_activities",
         },
         () => {
           fetchDashboardData();
         }
       )
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: '*',
-          schema: 'public',
-          table: 'counsellor_sessions'
+          event: "*",
+          schema: "public",
+          table: "counsellor_sessions",
         },
         () => {
           fetchDashboardData();
@@ -95,7 +97,9 @@ export const WellnessDashboard = ({ onRetakeAssessment }: WellnessDashboardProps
 
   const fetchDashboardData = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
 
       // Fetch wellness activities
@@ -117,10 +121,9 @@ export const WellnessDashboard = ({ onRetakeAssessment }: WellnessDashboardProps
 
       // Calculate total points
       const points = (activitiesData || [])
-        .filter(activity => activity.completed)
+        .filter((activity) => activity.completed)
         .reduce((sum, activity) => sum + activity.points_earned, 0);
       setTotalPoints(points);
-
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
@@ -130,7 +133,9 @@ export const WellnessDashboard = ({ onRetakeAssessment }: WellnessDashboardProps
 
   const createInitialActivities = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
 
       // Check if user already has activities
@@ -169,7 +174,8 @@ export const WellnessDashboard = ({ onRetakeAssessment }: WellnessDashboardProps
           user_id: user.id,
           activity_type: "social",
           activity_name: "Connect with a Friend",
-          description: "Have a meaningful conversation with someone you care about",
+          description:
+            "Have a meaningful conversation with someone you care about",
           points_earned: 20,
         },
         {
@@ -192,9 +198,9 @@ export const WellnessDashboard = ({ onRetakeAssessment }: WellnessDashboardProps
     try {
       const { error } = await supabase
         .from("wellness_activities")
-        .update({ 
-          completed: true, 
-          completed_at: new Date().toISOString() 
+        .update({
+          completed: true,
+          completed_at: new Date().toISOString(),
         })
         .eq("id", activityId);
 
@@ -202,7 +208,8 @@ export const WellnessDashboard = ({ onRetakeAssessment }: WellnessDashboardProps
 
       toast({
         title: "Activity completed!",
-        description: "Great job! You've earned points for your wellness journey.",
+        description:
+          "Great job! You've earned points for your wellness journey.",
       });
 
       fetchDashboardData();
@@ -232,9 +239,16 @@ export const WellnessDashboard = ({ onRetakeAssessment }: WellnessDashboardProps
     }
   };
 
-  const completedActivities = activities.filter(activity => activity.completed);
-  const pendingActivities = activities.filter(activity => !activity.completed);
-  const completionRate = activities.length > 0 ? (completedActivities.length / activities.length) * 100 : 0;
+  const completedActivities = activities.filter(
+    (activity) => activity.completed
+  );
+  const pendingActivities = activities.filter(
+    (activity) => !activity.completed
+  );
+  const completionRate =
+    activities.length > 0
+      ? (completedActivities.length / activities.length) * 100
+      : 0;
 
   if (isLoading) {
     return (
@@ -248,7 +262,7 @@ export const WellnessDashboard = ({ onRetakeAssessment }: WellnessDashboardProps
 
   return (
     <div className="min-h-screen gradient-hero p-4">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
         {/* Header */}
         <Card className="shadow-card">
           <CardHeader>
@@ -256,15 +270,19 @@ export const WellnessDashboard = ({ onRetakeAssessment }: WellnessDashboardProps
               <div>
                 <CardTitle className="text-2xl font-bold flex items-center gap-2">
                   <Heart className="h-6 w-6 text-wellness" />
-                  Wellness Dashboard
+                  CareSpark Dashboard
                 </CardTitle>
                 <p className="text-muted-foreground mt-2">
                   Track your mental health journey and celebrate your progress
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-3xl font-bold text-wellness">{totalPoints}</div>
-                <div className="text-sm text-muted-foreground">Wellness Points</div>
+                <div className="text-3xl font-bold text-wellness">
+                  {totalPoints}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Wellness Points
+                </div>
               </div>
             </div>
           </CardHeader>
@@ -272,36 +290,42 @@ export const WellnessDashboard = ({ onRetakeAssessment }: WellnessDashboardProps
 
         {/* Progress Overview */}
         <div className="grid md:grid-cols-3 gap-4">
-          <Card className="shadow-card">
+          <Card className="shadow-card hover-scale">
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-2">
                 <Award className="h-5 w-5 text-wellness" />
                 <span className="font-semibold">Completion Rate</span>
               </div>
-              <div className="text-2xl font-bold mb-2">{Math.round(completionRate)}%</div>
+              <div className="text-2xl font-bold mb-2">
+                {Math.round(completionRate)}%
+              </div>
               <Progress value={completionRate} className="h-2" />
             </CardContent>
           </Card>
 
-          <Card className="shadow-card">
+          <Card className="shadow-card hover-scale">
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-2">
                 <CheckCircle className="h-5 w-5 text-primary" />
                 <span className="font-semibold">Completed</span>
               </div>
-              <div className="text-2xl font-bold">{completedActivities.length}</div>
+              <div className="text-2xl font-bold">
+                {completedActivities.length}
+              </div>
               <div className="text-sm text-muted-foreground">Activities</div>
             </CardContent>
           </Card>
 
-          <Card className="shadow-card">
+          <Card className="shadow-card hover-scale">
             <CardContent className="p-6">
               <div className="flex items-center gap-2 mb-2">
                 <Calendar className="h-5 w-5 text-crisis" />
                 <span className="font-semibold">Sessions</span>
               </div>
               <div className="text-2xl font-bold">{sessions.length}</div>
-              <div className="text-sm text-muted-foreground">Counsellor meetings</div>
+              <div className="text-sm text-muted-foreground">
+                Counsellor meetings
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -317,8 +341,8 @@ export const WellnessDashboard = ({ onRetakeAssessment }: WellnessDashboardProps
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
               {onRetakeAssessment && (
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="h-16 flex-col gap-1 border-primary text-primary hover:bg-primary hover:text-primary-foreground"
                   onClick={onRetakeAssessment}
                 >
@@ -343,15 +367,18 @@ export const WellnessDashboard = ({ onRetakeAssessment }: WellnessDashboardProps
                 <span className="text-xs">Learn</span>
               </Button>
             </div>
-            
+
             {onRetakeAssessment && (
               <div className="mt-4 p-3 bg-primary/5 border border-primary/20 rounded-lg">
                 <div className="flex items-start gap-3">
                   <Brain className="h-5 w-5 text-primary mt-0.5" />
                   <div>
-                    <h4 className="font-medium text-primary mb-1">Assessment Available</h4>
+                    <h4 className="font-medium text-primary mb-1">
+                      Assessment Available
+                    </h4>
                     <p className="text-sm text-muted-foreground">
-                      You can retake your mental wellness assessment anytime to get updated recommendations and support.
+                      You can retake your mental wellness assessment anytime to
+                      get updated recommendations and support.
                     </p>
                   </div>
                 </div>
