@@ -115,7 +115,7 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-gradient-to-b from-wellnessBgStart to-wellnessBgEnd/80 backdrop-blur-lg border-b border-border/50 rounded-b-2xl shadow-soft transition-smooth" aria-label="Main Navigation">
+    <nav className="sticky top-0 z-50 bg-gradient-to-b from-wellnessBgStart to-wellnessBgEnd/80 backdrop-blur-lg border-b border-border/50 transition-smooth" aria-label="Main Navigation">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20 md:h-24">
           {/* Logo */}
@@ -229,7 +229,7 @@ const Navigation = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-border/50 py-6 animate-fade-in rounded-b-2xl shadow-soft bg-gradient-to-b from-wellnessBgStart to-wellnessBgEnd/90">
+          <div className="md:hidden border-t border-border/50 py-6 animate-fade-in bg-gradient-to-b from-wellnessBgStart to-wellnessBgEnd/90">
             <div className="flex flex-col space-y-5">
               {navItems.map((item) => (
                 user ? (

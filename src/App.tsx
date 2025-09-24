@@ -31,7 +31,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <div className="min-h-screen flex flex-col bg-gradient-to-br from-[var(--wellnessBgStart)] to-[var(--wellnessBgEnd)] text-[var(--wellnessText)] rounded-2xl shadow-soft transition-smooth px-4 md:px-8 py-4">
+          <div className="min-h-screen flex flex-col bg-gradient-to-br from-[var(--wellnessBgStart)] to-[var(--wellnessBgEnd)] text-[var(--wellnessText)] transition-smooth">
             <Navigation />
             <main className="flex-1">
               <Routes>
