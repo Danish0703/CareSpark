@@ -309,13 +309,13 @@ export const ChatBot = ({ onAssessmentComplete }: ChatBotProps) => {
               Mental Wellness Assessment
             </CardTitle>
           </CardHeader>
-          <CardContent className="flex-1 flex flex-col p-0">
+          <CardContent className="flex-1 flex flex-col p-0 rounded-b-2xl">
             <ScrollArea className="flex-1 p-6" ref={scrollAreaRef}>
               <div className="space-y-4">
                 {messages.map((message) => (
                   <div
                     key={message.id}
-                    className={`flex items-start gap-3 ${
+                    className={`flex items-end gap-3 ${
                       message.sender === "user" ? "flex-row-reverse" : ""
                     }`}
                   >
@@ -327,9 +327,9 @@ export const ChatBot = ({ onAssessmentComplete }: ChatBotProps) => {
                       }`}
                     >
                       {message.sender === "user" ? (
-                        <User className="h-4 w-4" />
+                        <User className="h-5 w-5" />
                       ) : (
-                        <Bot className="h-4 w-4" />
+                        <Bot className="h-5 w-5" />
                       )}
                     </div>
                     <div
@@ -349,39 +349,43 @@ export const ChatBot = ({ onAssessmentComplete }: ChatBotProps) => {
                   </div>
                 ))}
                 {isLoading && (
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-full bg-wellness text-wellness-foreground">
-                      <Bot className="h-4 w-4" />
+                  <div className="flex items-end gap-3">
+                    <div className="p-2 rounded-full bg-wellnessAccent text-wellnessText shadow-card">
+                      <Bot className="h-5 w-5" />
                     </div>
-                    <div className="bg-muted p-4 rounded-lg">
+                    <div className="bg-white/90 p-4 rounded-2xl shadow-card">
                       <div className="flex items-center gap-2">
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        <span className="text-sm">Thinking...</span>
+                        <span className="text-base">Thinking...</span>
                       </div>
                     </div>
                   </div>
                 )}
               </div>
             </ScrollArea>
-            <div className="p-6 border-t bg-card">
-              <div className="flex gap-2">
+            <div className="p-6 border-t bg-white/80 rounded-b-2xl sticky bottom-0 z-10">
+              <form className="flex gap-2" onSubmit={e => { e.preventDefault(); handleSendMessage(); }} aria-label="Chat input">
                 <Input
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Type your response..."
-                  className="flex-1"
+                  className="flex-1 rounded-2xl bg-white/90 border-none focus:ring-2 focus:ring-wellnessPrimary text-wellnessText text-base shadow-card"
                   disabled={isLoading}
+                  aria-label="Type your message"
                 />
                 <Button
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim() || isLoading}
                   variant="wellness"
                   size="icon"
+                  className="rounded-full shadow-glow hover:scale-110 transition-smooth"
+                  aria-label="Send message"
+                  type="submit"
                 >
-                  <Send className="h-4 w-4" />
+                  <Send className="h-5 w-5" />
                 </Button>
-              </div>
+              </form>
             </div>
           </CardContent>
         </Card>

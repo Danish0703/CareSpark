@@ -115,39 +115,41 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
+    <nav className="sticky top-0 z-50 bg-gradient-to-b from-wellnessBgStart to-wellnessBgEnd/80 backdrop-blur-lg border-b border-border/50 rounded-b-2xl shadow-soft transition-smooth" aria-label="Main Navigation">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-20 md:h-24">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-smooth">
-            <div className="p-2 rounded-full bg-primary-light">
-              <Brain className="h-6 w-6 text-primary" />
+          <Link to="/" className="flex items-center space-x-3 hover:scale-105 hover:shadow-glow transition-smooth rounded-2xl px-2 py-1" aria-label="Mental Wellness Home">
+            <div className="p-3 rounded-full bg-wellnessPrimary/10 shadow-card">
+              <Brain className="h-8 w-8 text-wellnessPrimary" />
             </div>
-            <span className="text-xl font-bold text-primary">
-              Mental<span className="text-wellness">Wellness</span>
+            <span className="text-2xl md:text-3xl font-extrabold text-wellnessPrimary tracking-tight">
+              Mental<span className="text-wellnessSecondary">Wellness</span>
             </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-10">
             {navItems.map((item) => (
               user ? (
                 <Link
                   key={item.label}
                   to={item.href}
-                  className={`text-foreground/80 hover:text-primary transition-smooth font-medium flex items-center gap-2 ${
-                    location.pathname === item.href ? 'text-primary' : ''
+                  aria-label={item.label}
+                  className={`text-wellnessTextSecondary hover:text-wellnessPrimary transition-smooth font-semibold flex items-center gap-2 px-3 py-2 rounded-2xl hover:bg-wellnessPrimary/10 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-wellnessPrimary/40 ${
+                    location.pathname === item.href ? 'text-wellnessPrimary bg-wellnessPrimary/10' : ''
                   }`}
                 >
-                  {item.icon && <item.icon className="h-4 w-4" />}
+                  {item.icon && <item.icon className="h-5 w-5" />}
                   {item.label}
                 </Link>
               ) : (
                 <a
                   key={item.label}
                   href={item.href}
+                  aria-label={item.label}
                   onClick={(e) => handleSmoothScroll(e, item.href)}
-                  className="text-foreground/80 hover:text-primary transition-smooth font-medium cursor-pointer"
+                  className="text-wellnessTextSecondary hover:text-wellnessPrimary transition-smooth font-semibold cursor-pointer px-3 py-2 rounded-2xl hover:bg-wellnessPrimary/10 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-wellnessPrimary/40"
                 >
                   {item.label}
                 </a>
@@ -160,10 +162,10 @@ const Navigation = () => {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                    <Avatar className="h-10 w-10">
+                  <Button variant="ghost" className="relative h-12 w-12 rounded-full shadow-card hover:shadow-glow transition-smooth">
+                    <Avatar className="h-12 w-12">
                       <AvatarImage src="" alt={profile?.full_name || ''} />
-                      <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                      <AvatarFallback className="bg-wellnessPrimary/10 text-wellnessPrimary font-semibold">
                         {getUserInitials()}
                       </AvatarFallback>
                     </Avatar>
@@ -214,37 +216,40 @@ const Navigation = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden p-2 rounded-md hover:bg-muted transition-smooth"
+            className="md:hidden p-3 rounded-2xl hover:bg-wellnessPrimary/10 transition-smooth shadow-card"
+            aria-label="Toggle menu"
           >
             {isMenuOpen ? (
-              <X className="h-6 w-6" />
+              <X className="h-7 w-7" />
             ) : (
-              <Menu className="h-6 w-6" />
+              <Menu className="h-7 w-7" />
             )}
           </button>
         </div>
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-border/50 py-4 animate-fade-in">
-            <div className="flex flex-col space-y-4">
+          <div className="md:hidden border-t border-border/50 py-6 animate-fade-in rounded-b-2xl shadow-soft bg-gradient-to-b from-wellnessBgStart to-wellnessBgEnd/90">
+            <div className="flex flex-col space-y-5">
               {navItems.map((item) => (
                 user ? (
                   <button
                     key={item.label}
                     onClick={() => handleNavClick(item.href)}
-                    className={`text-foreground/80 hover:text-primary transition-smooth font-medium px-2 py-2 text-left flex items-center gap-2 ${
-                      location.pathname === item.href ? 'text-primary' : ''
+                    aria-label={item.label}
+                    className={`text-wellnessTextSecondary hover:text-wellnessPrimary transition-smooth font-semibold px-3 py-3 text-left flex items-center gap-3 rounded-2xl hover:bg-wellnessPrimary/10 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-wellnessPrimary/40 ${
+                      location.pathname === item.href ? 'text-wellnessPrimary bg-wellnessPrimary/10' : ''
                     }`}
                   >
-                    {item.icon && <item.icon className="h-4 w-4" />}
+                    {item.icon && <item.icon className="h-5 w-5" />}
                     {item.label}
                   </button>
                 ) : (
                   <a
                     key={item.label}
                     href={item.href}
-                    className="text-foreground/80 hover:text-primary transition-smooth font-medium px-2 py-1 cursor-pointer"
+                    aria-label={item.label}
+                    className="text-wellnessTextSecondary hover:text-wellnessPrimary transition-smooth font-semibold px-3 py-2 rounded-2xl hover:bg-wellnessPrimary/10 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-wellnessPrimary/40"
                     onClick={(e) => handleSmoothScroll(e, item.href)}
                   >
                     {item.label}

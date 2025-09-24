@@ -420,7 +420,7 @@ export const EnhancedRiskAssessment = ({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-light to-wellness-light p-4">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Chat Interface */}
         <div className="lg:col-span-2">
           <Card className="flex flex-col shadow-card">
@@ -430,13 +430,13 @@ export const EnhancedRiskAssessment = ({
                 Enhanced Mental Wellness Assessment
               </CardTitle>
             </CardHeader>
-            <CardContent className="flex-1 flex flex-col p-0">
+            <CardContent className="flex-1 flex flex-col p-0 rounded-b-2xl">
               <ScrollArea className="flex-1 p-6" ref={scrollAreaRef}>
                 <div className="space-y-4">
                   {messages.map((message) => (
                     <div
                       key={message.id}
-                      className={`flex items-start gap-3 ${
+                      className={`flex items-end gap-3 ${
                         message.sender === "user" ? "flex-row-reverse" : ""
                       }`}
                     >
@@ -448,9 +448,9 @@ export const EnhancedRiskAssessment = ({
                         }`}
                       >
                         {message.sender === "user" ? (
-                          <User className="h-4 w-4" />
+                          <User className="h-5 w-5" />
                         ) : (
-                          <Bot className="h-4 w-4" />
+                          <Bot className="h-5 w-5" />
                         )}
                       </div>
                       <div
@@ -470,11 +470,11 @@ export const EnhancedRiskAssessment = ({
                     </div>
                   ))}
                   {isLoading && (
-                    <div className="flex items-start gap-3">
-                      <div className="p-2 rounded-full bg-wellness text-wellness-foreground">
-                        <Bot className="h-4 w-4" />
+                    <div className="flex items-end gap-3">
+                      <div className="p-2 rounded-full bg-wellnessAccent text-wellnessText shadow-card">
+                        <Bot className="h-5 w-5" />
                       </div>
-                      <div className="bg-muted p-4 rounded-lg">
+                      <div className="bg-white/90 p-4 rounded-2xl shadow-card">
                         <div className="flex items-center gap-2">
                           <Loader2 className="h-4 w-4 animate-spin" />
                           <span className="text-sm">
@@ -486,37 +486,41 @@ export const EnhancedRiskAssessment = ({
                   )}
                 </div>
               </ScrollArea>
-              <div className="p-6 border-t bg-card">
-                <div className="flex gap-2">
+              <div className="p-6 border-t bg-white/80 rounded-b-2xl sticky bottom-0 z-10">
+                <form className="flex gap-2" onSubmit={e => { e.preventDefault(); handleSendMessage(); }} aria-label="Assessment input">
                   <Input
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Share how you're feeling..."
-                    className="flex-1"
+                    className="flex-1 rounded-2xl bg-white/90 border-none focus:ring-2 focus:ring-wellnessPrimary text-wellnessText text-base shadow-card"
                     disabled={isLoading}
+                    aria-label="Type your message"
                   />
                   <Button
                     onClick={handleSendMessage}
                     disabled={!inputValue.trim() || isLoading}
                     variant="wellness"
                     size="icon"
+                    className="rounded-full shadow-glow hover:scale-110 transition-smooth"
+                    aria-label="Send message"
+                    type="submit"
                   >
-                    <Send className="h-4 w-4" />
+                    <Send className="h-5 w-5" />
                   </Button>
-                </div>
+                </form>
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Risk Analysis Panel */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           {/* Overall Risk Score */}
-          <Card className="shadow-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-sm">
-                <AlertTriangle className="h-4 w-4" />
+          <Card className="shadow-soft rounded-2xl border-0 bg-white/90 hover:shadow-glow transition-smooth" aria-label="Overall Risk Score">
+            <CardHeader className="rounded-t-2xl">
+              <CardTitle className="flex items-center gap-2 text-base text-wellnessPrimary">
+                <AlertTriangle className="h-5 w-5" />
                 Risk Assessment
               </CardTitle>
             </CardHeader>
@@ -529,7 +533,7 @@ export const EnhancedRiskAssessment = ({
                 >
                   {getRiskLevel()}
                 </div>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-base text-wellnessTextSecondary mb-2">
                   Score: {Math.round(overallRiskScore)}/100
                 </div>
                 <Progress value={overallRiskScore} className="mt-2" />
@@ -552,14 +556,14 @@ export const EnhancedRiskAssessment = ({
           </Card>
 
           {/* Risk Factors Breakdown */}
-          <Card className="shadow-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-sm">
-                <Heart className="h-4 w-4" />
+          <Card className="shadow-soft rounded-2xl border-0 bg-white/90 hover:shadow-glow transition-smooth" aria-label="Risk Factors Breakdown">
+            <CardHeader className="rounded-t-2xl">
+              <CardTitle className="flex items-center gap-2 text-base text-wellnessPrimary">
+                <Heart className="h-5 w-5" />
                 Risk Factors
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-4">
               {Object.entries(riskFactors).map(([factor, score]) => (
                 <div key={factor} className="space-y-1">
                   <div className="flex justify-between text-xs">
@@ -568,25 +572,25 @@ export const EnhancedRiskAssessment = ({
                     </span>
                     <span>{score}/10</span>
                   </div>
-                  <Progress value={score * 10} className="h-2" />
+                  <Progress value={score * 10} className="h-3 rounded-2xl transition-all duration-700" aria-label={`${factor} progress`} />
                 </div>
               ))}
             </CardContent>
           </Card>
 
           {/* Conversation Progress */}
-          <Card className="shadow-card">
-            <CardHeader>
-              <CardTitle className="text-sm">Assessment Progress</CardTitle>
+          <Card className="shadow-soft rounded-2xl border-0 bg-white/90 hover:shadow-glow transition-smooth" aria-label="Assessment Progress">
+            <CardHeader className="rounded-t-2xl">
+              <CardTitle className="text-base text-wellnessPrimary">Assessment Progress</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-base text-wellnessTextSecondary font-medium">
                   <span>Messages exchanged</span>
                   <span>{conversationCount}/6</span>
                 </div>
-                <Progress value={(conversationCount / 6) * 100} />
-                <p className="text-xs text-muted-foreground">
+                <Progress value={(conversationCount / 6) * 100} className="h-3 rounded-2xl transition-all duration-700" aria-label="Conversation progress" />
+                <p className="text-xs text-wellnessTextSecondary mt-1">
                   Complete assessment to receive personalized recommendations
                 </p>
               </div>
