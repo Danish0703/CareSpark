@@ -69,11 +69,25 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        wellnessPrimary: '#6BAED6', // calm blue
+        wellnessSecondary: '#A8D5BA', // sage green
+        wellnessAccent: '#FFB7A5', // peach coral
+        wellnessHighlight: '#F6E27F', // pastel yellow
+        wellnessBgStart: '#E6F0F8',
+        wellnessBgEnd: '#EAF8F2',
+        wellnessText: '#2E2E2E',
+        wellnessTextSecondary: '#6E6E6E',
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        '2xl': '1.5rem',
+      },
+      boxShadow: {
+        soft: '0 4px 20px -4px rgba(107, 174, 214, 0.15)',
+        card: '0 2px 12px -2px rgba(46, 46, 46, 0.08)',
+        glow: '0 0 40px rgba(107, 174, 214, 0.3)',
       },
       keyframes: {
         "accordion-down": {

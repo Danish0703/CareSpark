@@ -31,7 +31,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <div className="min-h-screen flex flex-col">
+          <div className="min-h-screen flex flex-col bg-gradient-to-br from-[var(--wellnessBgStart)] to-[var(--wellnessBgEnd)] text-[var(--wellnessText)] transition-smooth">
             <Navigation />
             <main className="flex-1">
               <Routes>

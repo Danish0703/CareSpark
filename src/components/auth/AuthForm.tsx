@@ -33,6 +33,7 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
     email: "",
     password: "",
     fullName: "",
+    instituteName: "",
   });
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -47,6 +48,16 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    // If Institutional signup, require instituteName
+    if ((userType || selectedRole) === "admin" && !formData.instituteName.trim()) {
+      toast({
+        title: "Missing institute name",
+        description: "Please enter your institute name to sign up as an institutional account.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const { data, error } = await supabase.auth.signUp({
@@ -57,6 +68,7 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
           data: {
             full_name: formData.fullName,
             role: selectedRole,
+            ...(selectedRole === "admin" && { institute_name: formData.instituteName }),
           },
         },
       });
@@ -93,6 +105,32 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
     setIsLoading(true);
 
     try {
+      // Validation: if Institutional Login selected, ensure instituteName is provided
+      if ((userType || selectedRole) === "admin" && !formData.instituteName.trim()) {
+        toast({
+          title: "Missing institute name",
+          description: "Please enter your institute name for Institutional Login.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // Include instituteName in a backend record for login attempts when Institutional Login selected
+      if ((userType || selectedRole) === "admin") {
+        try {
+          await supabase.from("login_attempts").insert({
+            email: formData.email,
+            institute_name: formData.instituteName,
+            role: "admin",
+            attempted_at: new Date(),
+          });
+        } catch (err) {
+          // non-fatal: continue with sign-in even if storing attempt fails
+          console.warn("Failed to log institute login attempt", err);
+        }
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
@@ -159,11 +197,15 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
             )}
           </div>
           <CardTitle className="text-2xl font-bold text-balance">
+<<<<<<< HEAD
             {userType === "admin"
               ? "Admin Portal"
               : userType === "counselor"
               ? "Counselor Portal"
               : "CareSpark"}
+=======
+            {userType === "admin" ? "Admin Portal" : userType === "counselor" ? "Counselor Portal" : "CareSpark Hub"}
+>>>>>>> origin/main
           </CardTitle>
           <CardDescription className="text-muted-foreground">
             {userType === "admin"
@@ -193,6 +235,7 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
                         <SelectValue placeholder="Select your role" />
                       </SelectTrigger>
                       <SelectContent>
+<<<<<<< HEAD
                         <SelectItem value="user">
                           User - Access wellness resources
                         </SelectItem>
@@ -202,8 +245,28 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
                         <SelectItem value="admin">
                           Admin - Platform administration
                         </SelectItem>
+=======
+                        <SelectItem value="user">User - Access wellness resources</SelectItem>
+                        <SelectItem value="counselor">Counselor - Manage sessions & clients</SelectItem>
+                        <SelectItem value="admin">Institutional Login</SelectItem>
+>>>>>>> origin/main
                       </SelectContent>
                     </Select>
+                  </div>
+                )}
+                {/* When Institutional Login selected, show Institute Name field */}
+                {(userType || selectedRole) === "admin" && (
+                  <div className="space-y-2">
+                    <Label htmlFor="instituteName">Institute Name</Label>
+                    <Input
+                      id="instituteName"
+                      name="instituteName"
+                      type="text"
+                      placeholder="Enter your institute name"
+                      value={formData.instituteName}
+                      onChange={handleInputChange}
+                      required={(userType || selectedRole) === "admin"}
+                    />
                   </div>
                 )}
                 <div className="space-y-2">
@@ -281,6 +344,7 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
                         <SelectValue placeholder="Select your role" />
                       </SelectTrigger>
                       <SelectContent>
+<<<<<<< HEAD
                         <SelectItem value="user">
                           User - Seeking mental wellness support
                         </SelectItem>
@@ -290,8 +354,28 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
                         <SelectItem value="admin">
                           Admin - Platform administration
                         </SelectItem>
+=======
+                        <SelectItem value="user">User - Seeking mental wellness support</SelectItem>
+                        <SelectItem value="counselor">Counselor - Licensed mental health professional</SelectItem>
+                        <SelectItem value="admin">Institutional Login</SelectItem>
+>>>>>>> origin/main
                       </SelectContent>
                     </Select>
+                  </div>
+                )}
+                {/* When Institutional Login selected during signup, show Institute Name field */}
+                {(userType || selectedRole) === "admin" && (
+                  <div className="space-y-2">
+                    <Label htmlFor="instituteName">Institute Name</Label>
+                    <Input
+                      id="instituteName"
+                      name="instituteName"
+                      type="text"
+                      placeholder="Enter your institute name"
+                      value={formData.instituteName}
+                      onChange={handleInputChange}
+                      required={(userType || selectedRole) === "admin"}
+                    />
                   </div>
                 )}
                 <div className="space-y-2">
