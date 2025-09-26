@@ -49,10 +49,14 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
     e.preventDefault();
     setIsLoading(true);
     // If Institutional signup, require instituteName
-    if ((userType || selectedRole) === "admin" && !formData.instituteName.trim()) {
+    if (
+      (userType || selectedRole) === "admin" &&
+      !formData.instituteName.trim()
+    ) {
       toast({
         title: "Missing institute name",
-        description: "Please enter your institute name to sign up as an institutional account.",
+        description:
+          "Please enter your institute name to sign up as an institutional account.",
         variant: "destructive",
       });
       setIsLoading(false);
@@ -68,7 +72,9 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
           data: {
             full_name: formData.fullName,
             role: selectedRole,
-            ...(selectedRole === "admin" && { institute_name: formData.instituteName }),
+            ...(selectedRole === "admin" && {
+              institute_name: formData.instituteName,
+            }),
           },
         },
       });
@@ -106,10 +112,14 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
 
     try {
       // Validation: if Institutional Login selected, ensure instituteName is provided
-      if ((userType || selectedRole) === "admin" && !formData.instituteName.trim()) {
+      if (
+        (userType || selectedRole) === "admin" &&
+        !formData.instituteName.trim()
+      ) {
         toast({
           title: "Missing institute name",
-          description: "Please enter your institute name for Institutional Login.",
+          description:
+            "Please enter your institute name for Institutional Login.",
           variant: "destructive",
         });
         setIsLoading(false);
@@ -197,15 +207,11 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
             )}
           </div>
           <CardTitle className="text-2xl font-bold text-balance">
-<<<<<<< HEAD
             {userType === "admin"
               ? "Admin Portal"
               : userType === "counselor"
               ? "Counselor Portal"
-              : "CareSpark"}
-=======
-            {userType === "admin" ? "Admin Portal" : userType === "counselor" ? "Counselor Portal" : "CareSpark Hub"}
->>>>>>> origin/main
+              : "CareSpark Hub"}
           </CardTitle>
           <CardDescription className="text-muted-foreground">
             {userType === "admin"
@@ -235,7 +241,6 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
                         <SelectValue placeholder="Select your role" />
                       </SelectTrigger>
                       <SelectContent>
-<<<<<<< HEAD
                         <SelectItem value="user">
                           User - Access wellness resources
                         </SelectItem>
@@ -243,13 +248,8 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
                           Counselor - Manage sessions & clients
                         </SelectItem>
                         <SelectItem value="admin">
-                          Admin - Platform administration
+                          Institutional Login
                         </SelectItem>
-=======
-                        <SelectItem value="user">User - Access wellness resources</SelectItem>
-                        <SelectItem value="counselor">Counselor - Manage sessions & clients</SelectItem>
-                        <SelectItem value="admin">Institutional Login</SelectItem>
->>>>>>> origin/main
                       </SelectContent>
                     </Select>
                   </div>
@@ -344,7 +344,6 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
                         <SelectValue placeholder="Select your role" />
                       </SelectTrigger>
                       <SelectContent>
-<<<<<<< HEAD
                         <SelectItem value="user">
                           User - Seeking mental wellness support
                         </SelectItem>
@@ -352,13 +351,8 @@ export const AuthForm = ({ userType }: AuthFormProps) => {
                           Counselor - Licensed mental health professional
                         </SelectItem>
                         <SelectItem value="admin">
-                          Admin - Platform administration
+                          Institutional Login
                         </SelectItem>
-=======
-                        <SelectItem value="user">User - Seeking mental wellness support</SelectItem>
-                        <SelectItem value="counselor">Counselor - Licensed mental health professional</SelectItem>
-                        <SelectItem value="admin">Institutional Login</SelectItem>
->>>>>>> origin/main
                       </SelectContent>
                     </Select>
                   </div>
